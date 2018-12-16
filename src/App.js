@@ -33,7 +33,6 @@ class App extends Component {
   }
   toDamage(boxer,leftPosition,value){
     if(boxer == 'rightBoxer' && leftPosition <= (this.state.leftBoxerPosition + 55)){
-      console.log(this.state.stopGame)
       this.setState({leftBoxerHealth: this.state.leftBoxerHealth - 20})
     }
     if(boxer == 'leftBoxer' && leftPosition >= (this.state.rightBoxerPosition - 55)){

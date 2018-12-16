@@ -38,7 +38,6 @@ class Boxer extends React.Component{
   	this.props.setHookDamage(this.props.classText,this.props.leftPosition)
   }
   boxerMoves(e){
-    console.log(this.props.stopGame)
   	const clickEventForMoves = (forward,back,jab,hook) => {
   		switch(e.keyCode){
 			  case forward: this.towardsMove('forward')
