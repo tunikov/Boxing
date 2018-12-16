@@ -1,0 +1,38 @@
+.scores{
+    &__left{
+        left: 100px;
+    }
+    &__right{
+        right: 100px;
+    }
+    &-cont{
+        position: absolute;
+        top: 50px;
+        color: #ffffff;
+        letter-spacing: 1.2px;
+        span{
+            position: absolute;
+            display: inline-block;
+        }
+        &__name{
+            font-size: 21px;
+        }
+        &__health{
+            border: 1px solid #ffffff;
+            width: 202px;
+            height: 7px;
+            span{
+                height: 100%;
+                top: 0;
+                left: 0;
+                background: yellow;
+            }
+        }
+    }
+}
+.left-health{
+    left: 0;
+}
+.right-health{
+    right: 0;
+}

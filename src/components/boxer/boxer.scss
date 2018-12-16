@@ -1,0 +1,13 @@
+.boxer{
+	position: absolute;
+	top: 240px;
+	width: 287px;
+	height: 284px;
+}
+.leftBoxer{
+	background: url(../../img/left.png) no-repeat;
+}
+.rightBoxer{
+	background: url(../../img/right.png) no-repeat;
+	transform: scaleX(-1);
+}
