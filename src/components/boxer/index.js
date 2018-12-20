@@ -37,17 +37,11 @@ class Boxer extends React.Component{
     this.setState({ backgroundPosition: '', zIndex: '0' })
   }
 
-  towardsMove(side){
-    let movingLeft = Number(this.props.leftPosition)
-
-    if(side == 'forward'){
-      movingLeft = this.props.classText == 'leftBoxer' ? movingLeft + 50 : movingLeft - 50
-    }
-    if(side == 'back'){
-      movingLeft = this.props.classText == 'leftBoxer' ? movingLeft - 50 : movingLeft + 50
-    }
-
-    this.props.setPosition(this.props.classText, movingLeft)
+  move(toLeft) {
+    const newPosition = toLeft ?
+      parseInt(this.props.leftPosition) - 50 :
+      parseInt(this.props.leftPosition) + 50
+    this.props.setPosition(this.props.classText, newPosition)
     this.props.allowMoving ? this.setState({ backgroundPosition: '-584px 0' }) : this.setMainBoxerStage()
   }
 
@@ -64,20 +58,24 @@ class Boxer extends React.Component{
   }
 
   boxerMoves(e){
-    const clickEventForMoves = (forward, back, jab, hook) => {
+    const clickEventForMoves = (left, right, jab, hook) => {
       switch(e.keyCode){
-      case forward: this.towardsMove('forward')
+      case left:
+        this.move(true)
         break
-      case back: this.towardsMove('back')
+      case right:
+        this.move()
         break
       case jab: this.jab()
         break
       case hook: this.hook()
         break
+      default:
+        return
       }
     }
 
-    this.props.classText == 'leftBoxer' ? clickEventForMoves(87, 81, 86, 66) : clickEventForMoves(37, 39, 98, 97)
+    this.props.classText == 'leftBoxer' ? clickEventForMoves(81, 87, 86, 66) : clickEventForMoves(37, 39, 98, 97)
 
     setTimeout(() => this.setMainBoxerStage(), 100)
   }
