@@ -12,4 +12,4 @@
 # create-react-app utils
 /scripts
 /coverage
-registerServiceWorker.js
+/src/serviceWorker.js
