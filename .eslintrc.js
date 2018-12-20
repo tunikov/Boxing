@@ -134,7 +134,8 @@ module.exports = {
       2, {
         "ignoredNodes": [
           "JSX"
-        ]
+        ],
+        "SwitchCase": 1,
       } ]
   },
 }

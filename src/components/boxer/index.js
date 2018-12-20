@@ -60,18 +60,18 @@ class Boxer extends React.Component{
   boxerMoves(e){
     const clickEventForMoves = (left, right, jab, hook) => {
       switch(e.keyCode){
-      case left:
-        this.move(true)
-        break
-      case right:
-        this.move()
-        break
-      case jab: this.jab()
-        break
-      case hook: this.hook()
-        break
-      default:
-        return
+        case left:
+          this.move(true)
+          break
+        case right:
+          this.move()
+          break
+        case jab: this.jab()
+          break
+        case hook: this.hook()
+          break
+        default:
+          return
       }
     }
 
