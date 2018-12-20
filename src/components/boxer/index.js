@@ -37,12 +37,16 @@ class Boxer extends React.Component{
     this.setState({ backgroundPosition: '', zIndex: '0' })
   }
 
+  animateMoving() {
+    this.setState({ backgroundPosition: '-584px 0' })
+  }
+
   move(toLeft) {
     const newPosition = toLeft ?
       parseInt(this.props.leftPosition) - 50 :
       parseInt(this.props.leftPosition) + 50
     this.props.setPosition(this.props.classText, newPosition)
-    this.props.allowMoving ? this.setState({ backgroundPosition: '-584px 0' }) : this.setMainBoxerStage()
+    this.animateMoving()
   }
 
   jab(){
