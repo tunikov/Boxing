@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import './boxer.scss'
-
+import { movementPositions } from '../../contants'
 class Boxer extends React.Component{
   static propTypes = {
     stopGame: PropTypes.func.isRequired,
@@ -36,7 +36,7 @@ class Boxer extends React.Component{
   animateMoving() {
     this.setState({ backgroundPosition: '-584px 0' })
     setTimeout(() => {
-      this.setState({ backgroundPosition: '', zIndex: '0' })
+      this.setState(movementPositions.initialPosition)
     }, 100)
   }
 
@@ -51,6 +51,9 @@ class Boxer extends React.Component{
   jab(){
     this.setState({ backgroundPosition: '-292px 0', zIndex: '1' })
     this.props.setJabDamage(this.props.classText, this.props.leftPosition)
+    setTimeout(() => {
+      this.setState(movementPositions.initialPosition)
+    }, 100)
   }
 
   hook(){
@@ -58,6 +61,9 @@ class Boxer extends React.Component{
 
     this.setState({ backgroundPosition: `${handSide} -566px`, zIndex: '1', hookHand: !this.state.hookHand })
     this.props.setHookDamage(this.props.classText, this.props.leftPosition)
+    setTimeout(() => {
+      this.setState(movementPositions.initialPosition)
+    }, 100)
   }
 
   boxerMoves(e){
