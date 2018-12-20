@@ -33,12 +33,11 @@ class Boxer extends React.Component{
     if(this.props.stopGame) window.removeEventListener('keydown', this.boxerMoves)
   }
 
-  setMainBoxerStage(){
-    this.setState({ backgroundPosition: '', zIndex: '0' })
-  }
-
   animateMoving() {
     this.setState({ backgroundPosition: '-584px 0' })
+    setTimeout(() => {
+      this.setState({ backgroundPosition: '', zIndex: '0' })
+    }, 100)
   }
 
   move(toLeft) {
@@ -80,8 +79,6 @@ class Boxer extends React.Component{
     }
 
     this.props.classText == 'leftBoxer' ? clickEventForMoves(81, 87, 86, 66) : clickEventForMoves(37, 39, 98, 97)
-
-    setTimeout(() => this.setMainBoxerStage(), 100)
   }
 
   render(){
