@@ -29,7 +29,7 @@ class Boxer extends React.Component{
     window.addEventListener('keydown', this.boxerMoves)
   }
 
-  componentDidUpdate(){
+  componentWillUnmount() {
     if(this.props.stopGame) window.removeEventListener('keydown', this.boxerMoves)
   }
 
