@@ -78,7 +78,7 @@ class Boxer extends React.Component{
       }
     }
 
-    this.props.classText == 'leftBoxer' ? clickEventForMoves(81, 87, 86, 66) : clickEventForMoves(37, 39, 98, 97)
+    this.props.classText == 'leftBoxer' ? clickEventForMoves(81, 87, 86, 66) : clickEventForMoves(37, 39, 38, 40)
   }
 
   render(){
