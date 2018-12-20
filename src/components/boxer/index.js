@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 
 import './boxer.scss'
 
-
 class Boxer extends React.Component{
   static propTypes = {
     stopGame: PropTypes.func.isRequired,
@@ -25,9 +24,11 @@ class Boxer extends React.Component{
       hookHand: true
     }
   }
+
   componentDidMount(){
     window.addEventListener('keydown', this.boxerMoves)
   }
+
   componentDidUpdate(){
     if(this.props.stopGame) window.removeEventListener('keydown', this.boxerMoves)
   }
@@ -35,6 +36,7 @@ class Boxer extends React.Component{
   setMainBoxerStage(){
     this.setState({ backgroundPosition: '', zIndex: '0' })
   }
+
   towardsMove(side){
     let movingLeft = Number(this.props.leftPosition)
 
@@ -48,16 +50,19 @@ class Boxer extends React.Component{
     this.props.setPosition(this.props.classText, movingLeft)
     this.props.allowMoving ? this.setState({ backgroundPosition: '-584px 0' }) : this.setMainBoxerStage()
   }
+
   jab(){
     this.setState({ backgroundPosition: '-292px 0', zIndex: '1' })
     this.props.setJabDamage(this.props.classText, this.props.leftPosition)
   }
+
   hook(){
     let handSide = this.state.hookHand ? '-584px' : '-292px'
 
     this.setState({ backgroundPosition: `${handSide} -566px`, zIndex: '1', hookHand: !this.state.hookHand })
     this.props.setHookDamage(this.props.classText, this.props.leftPosition)
   }
+
   boxerMoves(e){
     const clickEventForMoves = (forward, back, jab, hook) => {
       switch(e.keyCode){

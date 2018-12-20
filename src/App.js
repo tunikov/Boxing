@@ -19,6 +19,7 @@ class App extends Component {
       winner: false
     }
   }
+
   setBoxerPosition(boxer, leftPosition){
     this.setState({ allowMoving: true })
     const limitMoving = () => this.setState({ allowMoving: false })
@@ -31,6 +32,7 @@ class App extends Component {
     }
     this.setState({ [`${boxer}Position`]: leftPosition })
   }
+
   toDamage(boxer, leftPosition) {
     if(boxer == 'rightBoxer' && leftPosition <= (this.state.leftBoxerPosition + 55)){
       this.setState({ leftBoxerHealth: this.state.leftBoxerHealth - 20 })
@@ -43,12 +45,15 @@ class App extends Component {
       this.setState({ winner: this.state.rightBoxerHealth <= 0 ? 'Left Boxer' : 'Right Boxer' })
     }
   }
+
   setJabDamage(boxer, leftPosition){
     this.toDamage(boxer, leftPosition, 5)
   }
+
   setHookDamage(boxer, leftPosition){
     this.toDamage(boxer, leftPosition, 20)
   }
+
   render(){
     return (
       <div className="wrapper">
