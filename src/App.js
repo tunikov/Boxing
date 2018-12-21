@@ -2,56 +2,109 @@ import React, { Component } from 'react'
 import './App.scss'
 import Score from './components/score'
 import Boxer from './components/boxer'
+import { initialPositions as IP } from './contants'
 
 class App extends Component {
   constructor(props){
     super(props)
-    this.setBoxerPosition = this.setBoxerPosition.bind(this)
-    this.setJabDamage = this.setJabDamage.bind(this)
-    this.setHookDamage = this.setHookDamage.bind(this)
     this.state = {
       leftBoxerHealth: 100,
       rightBoxerHealth: 100,
-      leftBoxerPosition: 350,
-      rightBoxerPosition: 555,
-      allowMoving: true,
-      stopGame: false,
-      winner: false
+      leftBoxerPosition: IP.leftBoxer,
+      rightBoxerPosition: IP.rightBoxer,
+      isLeftMoving: false,
+      isRightMoving: false,
+      isLeftJab: false,
+      isRightJab: false,
+      isLeftHook: false,
+      isRightHook: false,
+      winner: null,
     }
   }
 
-  setBoxerPosition(boxer, leftPosition){
-    this.setState({ allowMoving: true })
-    const limitMoving = () => this.setState({ allowMoving: false })
-
-    if(boxer == 'rightBoxer'){
-      if(leftPosition >= 750 || leftPosition <= (this.state.leftBoxerPosition + 50)) return limitMoving()
-    }
-    if(boxer == 'leftBoxer'){
-      if(leftPosition <= 150 || leftPosition >= (this.state.rightBoxerPosition - 50)) return limitMoving()
-    }
-    this.setState({ [`${boxer}Position`]: leftPosition })
+  componentDidMount() {
+    window.addEventListener('keydown', ev => {
+      //eslint-disable-next-line no-console
+      console.log(ev.keyCode)
+      switch(ev.keyCode) {
+        //movements
+        case 37:
+          this.moveRightBoxer(true)
+          break
+        case 39:
+          this.moveRightBoxer()
+          break
+        case 65:
+          this.moveLeftBoxer(true)
+          break
+        case 68:
+          this.moveLeftBoxer()
+          break
+        // jabs
+        case 38:
+          this.rightJab()
+          break
+        case 87:
+          this.leftJab()
+          break
+        default:
+          return
+      }
+    })
   }
 
-  toDamage(boxer, leftPosition) {
-    if(boxer == 'rightBoxer' && leftPosition <= (this.state.leftBoxerPosition + 55)){
-      this.setState({ leftBoxerHealth: this.state.leftBoxerHealth - 20 })
-    }
-    if(boxer == 'leftBoxer' && leftPosition >= (this.state.rightBoxerPosition - 55)){
-      this.setState({ rightBoxerHealth: this.state.rightBoxerHealth - 20 })
-    }
-    if(this.state.rightBoxerHealth <= 0 || this.state.leftBoxerHealth <= 0){
-      this.setState({ stopGame: true })
-      this.setState({ winner: this.state.rightBoxerHealth <= 0 ? 'Left Boxer' : 'Right Boxer' })
+  animateMovement(isRight) {
+    const movingBoxer = isRight ? 'isRightMoving' : 'isLeftMoving'
+    this.setState({ [movingBoxer]: true })
+    setTimeout(() => {
+      this.setState({ [movingBoxer]: false })
+    }, 100)
+  }
+
+  moveRightBoxer(toLeft) {
+    if(toLeft) {
+      if(this.state.rightBoxerPosition > this.state.leftBoxerPosition) {
+        this.animateMovement(true)
+        this.setState({ rightBoxerPosition: this.state.rightBoxerPosition - 50 })
+      }
+    } else if(this.state.rightBoxerPosition < IP.rightBoxer) {
+      this.animateMovement(true)
+      this.setState({ rightBoxerPosition: this.state.rightBoxerPosition + 50 })
     }
   }
 
-  setJabDamage(boxer, leftPosition){
-    this.toDamage(boxer, leftPosition, 5)
+  moveLeftBoxer(toLeft) {
+    if(toLeft) {
+      if(this.state.leftBoxerPosition > IP.leftBoxer) {
+        this.animateMovement()
+        this.setState({ leftBoxerPosition: this.state.leftBoxerPosition - 50 })
+      }
+    } else if(this.state.leftBoxerPosition < this.state.rightBoxerPosition) {
+      this.animateMovement()
+      this.setState({ leftBoxerPosition: this.state.leftBoxerPosition + 50 })
+    }
   }
 
-  setHookDamage(boxer, leftPosition){
-    this.toDamage(boxer, leftPosition, 20)
+  rightJab() {
+    this.animateJab(true)
+    if(this.state.rightBoxerPosition - this.state.leftBoxerPosition <= 50) {
+      this.setState({ leftBoxerHealth: this.state.leftBoxerHealth - 10 })
+    }
+  }
+
+  leftJab() {
+    this.animateJab()
+    if(this.state.rightBoxerPosition - this.state.leftBoxerPosition <= 50) {
+      this.setState({ rightBoxerHealth: this.state.rightBoxerHealth - 10 })
+    }
+  }
+
+  animateJab(isRight) {
+    const whoJabs = isRight ? 'isRightJab' : 'isLeftJab'
+    this.setState({ [whoJabs]: true })
+    setTimeout(() => {
+      this.setState({ [whoJabs]: false })
+    }, 100)
   }
 
   render(){
@@ -65,23 +118,15 @@ class App extends Component {
             name="right" />
           <div className="speaker">{this.state.winner ? `${this.state.winner} wins` : ''}</div>
           <Boxer
-            allowMoving={this.state.allowMoving}
-            classText="leftBoxer"
-            leftPosition={this.state.leftBoxerPosition}
-            opponentPosition={this.state.rightBoxerPosition}
-            setHookDamage={this.setHookDamage}
-            setJabDamage={this.setJabDamage}
-            setPosition={this.setBoxerPosition}
-            stopGame={this.state.stopGame} />
+            id="leftBoxer"
+            isJab={this.state.isLeftJab}
+            isMoving={this.state.isLeftMoving}
+            position={this.state.leftBoxerPosition} />
           <Boxer
-            allowMoving={this.state.allowMoving}
-            classText="rightBoxer"
-            leftPosition={this.state.rightBoxerPosition}
-            opponentPosition={this.state.leftBoxerPosition}
-            setHookDamage={this.setHookDamage}
-            setJabDamage={this.setJabDamage}
-            setPosition={this.setBoxerPosition}
-            stopGame={this.state.stopGame} />
+            id="rightBoxer"
+            isJab={this.state.isRightJab}
+            isMoving={this.state.isRightMoving}
+            position={this.state.rightBoxerPosition} />
         </div>
       </div>
     )
