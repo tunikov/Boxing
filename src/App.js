@@ -60,12 +60,21 @@ class App extends Component {
     })
   }
 
+  checkWinner() {
+    this.state.leftBoxerHealth <= 0 ?
+      this.setState({ winner: 'Right Boxer' }) :
+      this.state.rightBoxerHealth <= 0 ?
+        this.setState({ winner: 'Left Boxer' }) : this.setState({ winner: null })
+  }
+
   animateMovement(isRight) {
-    const movingBoxer = isRight ? 'isRightMoving' : 'isLeftMoving'
-    this.setState({ [movingBoxer]: true })
-    setTimeout(() => {
-      this.setState({ [movingBoxer]: false })
-    }, 100)
+    if(!this.state.winner) {
+      const movingBoxer = isRight ? 'isRightMoving' : 'isLeftMoving'
+      this.setState({ [movingBoxer]: true })
+      setTimeout(() => {
+        this.setState({ [movingBoxer]: false })
+      }, 100)
+    }
   }
 
   moveRightBoxer(toLeft) {
@@ -97,6 +106,7 @@ class App extends Component {
     if(this.state.rightBoxerPosition - this.state.leftBoxerPosition <= 50) {
       this.setState({ leftBoxerHealth: this.state.leftBoxerHealth - 10 })
     }
+    this.checkWinner()
   }
 
   leftJab() {
@@ -104,6 +114,7 @@ class App extends Component {
     if(this.state.rightBoxerPosition - this.state.leftBoxerPosition <= 50) {
       this.setState({ rightBoxerHealth: this.state.rightBoxerHealth - 10 })
     }
+    this.checkWinner()
   }
 
   rightHook() {
@@ -111,6 +122,7 @@ class App extends Component {
     if(this.state.rightBoxerPosition - this.state.leftBoxerPosition <= 50) {
       this.setState({ leftBoxerHealth: this.state.leftBoxerHealth - 20 })
     }
+    this.checkWinner()
   }
 
   leftHook() {
@@ -118,22 +130,27 @@ class App extends Component {
     if(this.state.rightBoxerPosition - this.state.leftBoxerPosition <= 50) {
       this.setState({ rightBoxerHealth: this.state.rightBoxerHealth - 20 })
     }
+    this.checkWinner()
   }
 
   animateJab(isRight) {
-    const whoJabs = isRight ? 'isRightJab' : 'isLeftJab'
-    this.setState({ [whoJabs]: true })
-    setTimeout(() => {
-      this.setState({ [whoJabs]: false })
-    }, 100)
+    if(!this.state.winner) {
+      const whoJabs = isRight ? 'isRightJab' : 'isLeftJab'
+      this.setState({ [whoJabs]: true })
+      setTimeout(() => {
+        this.setState({ [whoJabs]: false })
+      }, 100)
+    }
   }
 
   animateHook(isRight) {
-    const whoHooks = isRight ? 'isRightHook' : 'isLeftHook'
-    this.setState({ [whoHooks]: true })
-    setTimeout(() => {
-      this.setState({ [whoHooks]: false })
-    }, 100)
+    if(!this.state.winner) {
+      const whoHooks = isRight ? 'isRightHook' : 'isLeftHook'
+      this.setState({ [whoHooks]: true })
+      setTimeout(() => {
+        this.setState({ [whoHooks]: false })
+      }, 100)
+    }
   }
 
   render(){
