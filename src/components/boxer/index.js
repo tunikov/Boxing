@@ -9,18 +9,20 @@ class Boxer extends React.Component{
     position: PropTypes.number.isRequired,
     isMoving: PropTypes.bool.isRequired,
     isJab: PropTypes.bool.isRequired,
+    isHook: PropTypes.bool.isRequired,
   }
 
   render(){
-    const xPosition = this.props.isMoving ?
-      '-580px' : this.props.isJab ?
-        '-290px' : ''
+    const backgroundPosition = this.props.isMoving ?
+      '-580px 0' : this.props.isJab ?
+        '-290px 0' : this.props.isHook ?
+          '-580px -570px' : ''
     return(
       <div
         className={`boxer ${this.props.id}`}
         style={{
           left: this.props.position,
-          backgroundPositionX: xPosition,
+          backgroundPosition,
         }} />
     )
   }
