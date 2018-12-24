@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
+import { first } from 'lodash'
+
 import './App.scss'
 import Score from './components/score'
 import Boxer from './components/boxer'
-import { initialPositions as IP } from './contants'
+import { damage } from './config'
+import { initialPositions as IP, boxersId as ID } from './constants'
 
 class App extends Component {
   constructor(props){
@@ -12,52 +15,11 @@ class App extends Component {
       rightBoxerHealth: 100,
       leftBoxerPosition: IP.leftBoxer,
       rightBoxerPosition: IP.rightBoxer,
-      isLeftMoving: false,
-      isRightMoving: false,
-      isLeftJab: false,
-      isRightJab: false,
-      isLeftHook: false,
-      isRightHook: false,
       winner: null,
     }
-  }
-
-  componentDidMount() {
-    window.addEventListener('keydown', ev => {
-      //eslint-disable-next-line no-console
-      console.log(ev.keyCode)
-      switch(ev.keyCode) {
-        //movements
-        case 37:
-          this.moveRightBoxer(true)
-          break
-        case 39:
-          this.moveRightBoxer()
-          break
-        case 65:
-          this.moveLeftBoxer(true)
-          break
-        case 68:
-          this.moveLeftBoxer()
-          break
-        // jabs
-        case 38:
-          this.rightJab()
-          break
-        case 87:
-          this.leftJab()
-          break
-        //hooks
-        case 83:
-          this.leftHook()
-          break
-        case 40:
-          this.rightHook()
-          break
-        default:
-          return
-      }
-    })
+    this.moveLeft = this.moveLeft.bind(this)
+    this.moveRight = this.moveRight.bind(this)
+    this.checkDamage = this.checkDamage.bind(this)
   }
 
   checkWinner() {
@@ -67,89 +29,46 @@ class App extends Component {
         this.setState({ winner: 'Left Boxer' }) : this.setState({ winner: null })
   }
 
-  animateMovement(isRight) {
-    if(!this.state.winner) {
-      const movingBoxer = isRight ? 'isRightMoving' : 'isLeftMoving'
-      this.setState({ [movingBoxer]: true })
-      setTimeout(() => {
-        this.setState({ [movingBoxer]: false })
-      }, 100)
-    }
-  }
-
-  moveRightBoxer(toLeft) {
-    if(toLeft) {
-      if(this.state.rightBoxerPosition > this.state.leftBoxerPosition) {
-        this.animateMovement(true)
-        this.setState({ rightBoxerPosition: this.state.rightBoxerPosition - 50 })
-      }
-    } else if(this.state.rightBoxerPosition < IP.rightBoxer) {
-      this.animateMovement(true)
-      this.setState({ rightBoxerPosition: this.state.rightBoxerPosition + 50 })
-    }
-  }
-
-  moveLeftBoxer(toLeft) {
-    if(toLeft) {
-      if(this.state.leftBoxerPosition > IP.leftBoxer) {
-        this.animateMovement()
-        this.setState({ leftBoxerPosition: this.state.leftBoxerPosition - 50 })
-      }
-    } else if(this.state.leftBoxerPosition < this.state.rightBoxerPosition) {
-      this.animateMovement()
-      this.setState({ leftBoxerPosition: this.state.leftBoxerPosition + 50 })
-    }
-  }
-
-  rightJab() {
-    this.animateJab(true)
-    if(this.state.rightBoxerPosition - this.state.leftBoxerPosition <= 50) {
-      this.setState({ leftBoxerHealth: this.state.leftBoxerHealth - 10 })
-    }
+  checkDamage(boxerId, hitType) {
+    if(this.state.rightBoxerPosition - this.state.leftBoxerPosition > 50)
+      return
+    const oppositId = first(Object.values(ID).filter(id => id !== boxerId))
+    this.setState({ [`${oppositId}Health`]: this.state[`${oppositId}Health`] - damage[hitType] })
     this.checkWinner()
   }
 
-  leftJab() {
-    this.animateJab()
-    if(this.state.rightBoxerPosition - this.state.leftBoxerPosition <= 50) {
-      this.setState({ rightBoxerHealth: this.state.rightBoxerHealth - 10 })
+  allowLeftMoving(boxerId) {
+    if(this.state.winner) return false
+    if(boxerId === ID.LEFT) {
+      if(this.state.leftBoxerPosition > IP.leftBoxer) return true
+    } else if (boxerId === ID.RIGHT) {
+      if(this.state.rightBoxerPosition > this.state.leftBoxerPosition) return true
     }
-    this.checkWinner()
+    return false
   }
 
-  rightHook() {
-    this.animateHook(true)
-    if(this.state.rightBoxerPosition - this.state.leftBoxerPosition <= 50) {
-      this.setState({ leftBoxerHealth: this.state.leftBoxerHealth - 20 })
+  allowRightMoving(boxerId) {
+    if(this.state.winner) return false
+    if(boxerId === ID.LEFT) {
+      if(this.state.leftBoxerPosition < this.state.rightBoxerPosition)
+        return true
+    } else if (boxerId === ID.RIGHT) {
+      if (this.state.rightBoxerPosition < IP.rightBoxer)
+        return true
     }
-    this.checkWinner()
+    return false
+
   }
 
-  leftHook() {
-    this.animateHook()
-    if(this.state.rightBoxerPosition - this.state.leftBoxerPosition <= 50) {
-      this.setState({ rightBoxerHealth: this.state.rightBoxerHealth - 20 })
-    }
-    this.checkWinner()
-  }
-
-  animateJab(isRight) {
-    if(!this.state.winner) {
-      const whoJabs = isRight ? 'isRightJab' : 'isLeftJab'
-      this.setState({ [whoJabs]: true })
-      setTimeout(() => {
-        this.setState({ [whoJabs]: false })
-      }, 100)
+  moveLeft(boxerId) {
+    if(this.allowLeftMoving(boxerId)) {
+      this.setState({ [`${boxerId}Position`]: this.state[`${boxerId}Position`] - 50 })
     }
   }
 
-  animateHook(isRight) {
-    if(!this.state.winner) {
-      const whoHooks = isRight ? 'isRightHook' : 'isLeftHook'
-      this.setState({ [whoHooks]: true })
-      setTimeout(() => {
-        this.setState({ [whoHooks]: false })
-      }, 100)
+  moveRight(boxerId) {
+    if(this.allowRightMoving(boxerId)) {
+      this.setState({ [`${boxerId}Position`]: this.state[`${boxerId}Position`] + 50 })
     }
   }
 
@@ -164,16 +83,18 @@ class App extends Component {
             name="right" />
           <div className="speaker">{this.state.winner ? `${this.state.winner} wins` : ''}</div>
           <Boxer
-            id="leftBoxer"
-            isHook={this.state.isLeftHook}
-            isJab={this.state.isLeftJab}
-            isMoving={this.state.isLeftMoving}
+            allowAction={!this.state.winner}
+            checkDamage={this.checkDamage}
+            id={ID.LEFT}
+            moveLeft={this.moveLeft}
+            moveRight={this.moveRight}
             position={this.state.leftBoxerPosition} />
           <Boxer
-            id="rightBoxer"
-            isHook={this.state.isRightHook}
-            isJab={this.state.isRightJab}
-            isMoving={this.state.isRightMoving}
+            allowAction={!this.state.winner}
+            checkDamage={this.checkDamage}
+            id={ID.RIGHT}
+            moveLeft={this.moveLeft}
+            moveRight={this.moveRight}
             position={this.state.rightBoxerPosition} />
         </div>
       </div>
