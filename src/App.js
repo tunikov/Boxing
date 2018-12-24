@@ -47,6 +47,13 @@ class App extends Component {
         case 87:
           this.leftJab()
           break
+        //hooks
+        case 83:
+          this.leftHook()
+          break
+        case 40:
+          this.rightHook()
+          break
         default:
           return
       }
@@ -99,11 +106,33 @@ class App extends Component {
     }
   }
 
+  rightHook() {
+    this.animateHook(true)
+    if(this.state.rightBoxerPosition - this.state.leftBoxerPosition <= 50) {
+      this.setState({ leftBoxerHealth: this.state.leftBoxerHealth - 20 })
+    }
+  }
+
+  leftHook() {
+    this.animateHook()
+    if(this.state.rightBoxerPosition - this.state.leftBoxerPosition <= 50) {
+      this.setState({ rightBoxerHealth: this.state.rightBoxerHealth - 20 })
+    }
+  }
+
   animateJab(isRight) {
     const whoJabs = isRight ? 'isRightJab' : 'isLeftJab'
     this.setState({ [whoJabs]: true })
     setTimeout(() => {
       this.setState({ [whoJabs]: false })
+    }, 100)
+  }
+
+  animateHook(isRight) {
+    const whoHooks = isRight ? 'isRightHook' : 'isLeftHook'
+    this.setState({ [whoHooks]: true })
+    setTimeout(() => {
+      this.setState({ [whoHooks]: false })
     }, 100)
   }
 
@@ -119,11 +148,13 @@ class App extends Component {
           <div className="speaker">{this.state.winner ? `${this.state.winner} wins` : ''}</div>
           <Boxer
             id="leftBoxer"
+            isHook={this.state.isLeftHook}
             isJab={this.state.isLeftJab}
             isMoving={this.state.isLeftMoving}
             position={this.state.leftBoxerPosition} />
           <Boxer
             id="rightBoxer"
+            isHook={this.state.isRightHook}
             isJab={this.state.isRightJab}
             isMoving={this.state.isRightMoving}
             position={this.state.rightBoxerPosition} />
