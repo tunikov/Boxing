@@ -5,6 +5,7 @@ import './App.scss'
 import Score from './components/score'
 import Boxer from './components/boxer'
 import { damage, initialState } from './config'
+import ModeSelection from './components/modeSelection'
 import { initialPositions as IP, boxersId as ID } from './constants'
 
 class App extends Component {
@@ -15,6 +16,7 @@ class App extends Component {
     this.moveRight = this.moveRight.bind(this)
     this.rematch = this.rematch.bind(this)
     this.checkDamage = this.checkDamage.bind(this)
+    this.onModeSelection = this.onModeSelection.bind(this)
   }
 
   _allowLeftMoving(boxerId) {
@@ -54,6 +56,10 @@ class App extends Component {
     this._checkWinner()
   }
 
+  onModeSelection(mode) {
+    this.setState({ mode })
+  }
+
   moveRight(boxerId) {
     if(this._allowRightMoving(boxerId)) {
       this.setState({ [`${boxerId}Position`]: this.state[`${boxerId}Position`] + 50 })
@@ -78,6 +84,7 @@ class App extends Component {
         onClick={this.rematch}>
         <div className="ring">
           <div className="ring-inner" />
+          {this.state.mode === 0 ? <ModeSelection onModeSelection={this.onModeSelection} /> : null}
           <Score health={this.state.leftBoxerHealth}
             name="left" />
           <Score health={this.state.rightBoxerHealth}
