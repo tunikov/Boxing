@@ -13,10 +13,12 @@ class Boxer extends React.Component{
     moveLeft: PropTypes.func.isRequired,
     moveRight: PropTypes.func.isRequired,
     checkDamage: PropTypes.func.isRequired,
+    controlsByComputer: PropTypes.bool,
   }
 
   static defaultProps = {
     allowAction: true,
+    controlsByComputer: false,
   }
 
   constructor(props) {
@@ -24,6 +26,7 @@ class Boxer extends React.Component{
     this.state = {
       image: movementPositions.initialPosition
     }
+    this._doRandomThings = this._doRandomThings.bind(this)
   }
 
   componentDidMount() {
@@ -51,12 +54,35 @@ class Boxer extends React.Component{
     })
   }
 
+  componentDidUpdate(prevProps) {
+    if(prevProps.controlsByComputer != this.props.controlsByComputer) {
+      this.props.controlsByComputer ? setInterval(() => this._doRandomThings()(), 300) : this._clearAllIntervals()
+    }
+  }
+
   _animateMoving(movingType) {
     if(!this.props.allowAction) return
     this.setState({ image: movementPositions[movingType] })
     setTimeout(() => {
       this.setState({ image: movementPositions.initialPosition })
     }, 100)
+  }
+
+  _clearAllIntervals() {
+    for (let i = 0; i<= 9999; i++) {
+      clearInterval(i)
+    }
+  }
+
+  _doRandomThings() {
+    const actions = [
+      () => {this.move(true)},
+      () => {this.move(false)},
+      () => {this.hit(this.props.id, movementTypes.jab)},
+      () => {this.hit(this.props.id, movementTypes.hook)}
+    ]
+    let rdmActionIdx = Math.round(Math.random() * (actions.length - 1))
+    return actions[rdmActionIdx]
   }
 
   move(toLeft) {

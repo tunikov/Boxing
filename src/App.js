@@ -105,6 +105,7 @@ class App extends Component {
           <Boxer
             allowAction={!this.state.winner}
             checkDamage={this.checkDamage}
+            controlsByComputer={this.state.mode === 1}
             id={ID.RIGHT}
             moveLeft={this.moveLeft}
             moveRight={this.moveRight}
